@@ -1,12 +1,16 @@
 package com.pratamawijaya.basekotlin.screens.home
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.e
 import com.pratamawijaya.basekotlin.data.repository.NewsRepository
 import com.pratamawijaya.basekotlin.domain.Article
 import com.pratamawijaya.basekotlin.screens.base.BaseViewModel
 import com.pratamawijaya.basekotlin.shared.RxUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 sealed class HomeScreenState
 object LoadingState : HomeScreenState()
@@ -21,28 +25,30 @@ class HomeVM(val repo: NewsRepository) : BaseViewModel() {
     fun getTopHeadlines() {
         homeState.value = LoadingState
 
-        compositeDisposable.add(
-                repo.getTopHeadlines()
-                        .compose(RxUtils.applySingleAsync())
-                        .subscribe({ result ->
-                            d { "result size ${result.size}" }
-                            homeState.value = ArticleLoadedState(result)
-                        }, this::onError))
+        viewModelScope.launch {
+            try {
+                val result = repo.getTopHeadlines()
+                homeState.value = ArticleLoadedState(result)
+            }catch (throwable: Throwable){
+                onError(throwable)
+            }finally {
 
+            }
+        }
     }
 
     fun getEverything(query: String, page: Int) {
         homeState.value = LoadingState
 
-        compositeDisposable.add(
-                repo.getEverything(query = query, page = page)
-                        .compose(RxUtils.applySingleAsync())
-                        .subscribe({ result ->
-                            //                    listArticle.addAll(result)
-                            homeState.value = ArticleLoadedState(result)
-
-                            d { "article size ${listArticle.size}" }
-                        }, this::onError))
+        viewModelScope.launch {
+            try {
+                val result = repo.getEverything(query = query, page = page)
+                homeState.value = ArticleLoadedState(result)
+                d { "article size ${listArticle.size}" }
+            }catch (throwable: Throwable){
+                onError(throwable)
+            }
+        }
     }
 
     override fun onError(error: Throwable) {

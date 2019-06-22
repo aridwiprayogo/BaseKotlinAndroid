@@ -8,10 +8,10 @@ open class ArticleMapper : BaseMapper<ArticleModel, Article> {
 
     override fun mapToDomain(model: ArticleModel): Article {
         return Article(
+                url = model.url,
                 title = model.title,
                 author = model.author ?: "",
                 content = model.content ?: "",
-                url = model.url,
                 imageUrl = model.urlToImage ?: ""
         )
     }

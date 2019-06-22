@@ -6,6 +6,6 @@ import com.pratamawijaya.basekotlin.data.database.dao.ArticleDao
 import com.pratamawijaya.basekotlin.data.database.entity.ArticleEntity
 
 @Database(entities = [ArticleEntity::class], version = 1)
-public abstract class AppDatabase : RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
     abstract fun articleDao(): ArticleDao
 }

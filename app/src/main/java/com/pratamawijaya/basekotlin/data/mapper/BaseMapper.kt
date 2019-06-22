@@ -6,7 +6,7 @@ interface BaseMapper<M, D> {
 
     fun mapToListDomain(models: List<M>): List<D> {
         val listDomain = mutableListOf<D>()
-        models.map { listDomain.add(mapToDomain(it)) }
+        models.map { models -> listDomain.add(mapToDomain(models)) }
         return listDomain
     }
 

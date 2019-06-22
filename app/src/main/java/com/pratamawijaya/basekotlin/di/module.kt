@@ -2,6 +2,7 @@ package com.pratamawijaya.basekotlin.di
 
 import androidx.room.Room
 import com.google.gson.GsonBuilder
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.pratamawijaya.basekotlin.data.database.AppDatabase
 import com.pratamawijaya.basekotlin.data.mapper.ArticleMapper
 import com.pratamawijaya.basekotlin.data.repository.NewsRepository
@@ -66,7 +67,7 @@ inline fun <reified T> createWebService(okHttpClient: OkHttpClient, url: String)
             .baseUrl(url)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build()
+            .addCallAdapterFactory(CoroutineCallAdapterFactory.invoke()).build()
     return retrofit.create(T::class.java)
 }
 
